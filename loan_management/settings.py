@@ -79,7 +79,7 @@ DATABASES = {
         'NAME': os.environ.get('PG_NAME',     'loan_management'),
         'USER': os.environ.get('PG_USER',    'loan_user'),
         'PASSWORD': os.environ.get('PG_PASSWORD','oreoluwa'),
-        'HOST': os.environ.get('PG_HOST',    'localhost'),
+        'HOST': os.environ.get('PG_HOST',  'loan-management-backend-g77a.onrender.com',  'localhost'),
         'PORT': os.environ.get('PG_PORT',    '5432'),
     }
 }
