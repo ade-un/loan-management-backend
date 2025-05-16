@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-j)0qj%%@zy^ns6bj)bvute!8z4%x*)bt%lu-lzsc2vxt70hu&5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['loan-management-backend-g77a.onrender.com', 'localhost', '127.0.0.1']
 
 
@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': os.environ.get('PG_NAME',     'loan_management'),
         'USER': os.environ.get('PG_USER',    'loan_user'),
         'PASSWORD': os.environ.get('PG_PASSWORD','oreoluwa'),
-        'HOST': os.environ.get('PG_HOST',    'localhost'),
+        'HOST': os.environ.get('PG_HOST',    'loan-management-backend-g77a.onrender.com'),
         'PORT': os.environ.get('PG_PORT',    '5432'),
     }
 }
