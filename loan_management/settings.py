@@ -81,6 +81,9 @@ DATABASES = {
         'PASSWORD': os.environ.get('PG_PASSWORD','oreoluwa'),
         'HOST': os.environ.get('PG_HOST',    'localhost'),
         'PORT': os.environ.get('PG_PORT',    '5432'),
+        'OPTIONS': {
+            'sslmode': 'require',
+            },
     }
 }
 
