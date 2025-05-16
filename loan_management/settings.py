@@ -81,9 +81,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('PG_PASSWORD','oreoluwa'),
         'HOST': os.environ.get('PG_HOST',    'localhost'),
         'PORT': os.environ.get('PG_PORT',    '5432'),
-        'OPTIONS': {
-            'sslmode': 'require',
-            },
     }
 }
 
@@ -122,6 +119,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
