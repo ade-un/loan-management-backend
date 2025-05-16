@@ -1,0 +1,207 @@
+/* Desktop - 1 (Adjusted for full screen) */
+
+body {
+    position: relative;
+    width: 100%; /* Make width responsive */
+    min-height: 100vh; /* Ensure at least viewport height */
+    background: #B2ADAD;
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* Stack header and content */
+    align-items: center; /* Center content horizontally */
+}
+
+/* Rectangle 6 (Header) */
+
+.header {
+    position: fixed; /* Keep header at the top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto; /* Adjust height based on content */
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    padding: 20px; /* Adjust padding as needed */
+    box-sizing: border-box; /* Include padding in width/height */
+    z-index: 10; /* Ensure it's above other content */
+}
+
+.top-circles {
+    display: flex; /* Arrange circles horizontally */
+    align-items: center; /* Vertically align circles */
+}
+
+.circle-1, .circle-2, .circle-3 {
+    box-sizing: border-box;
+    width: 19px;
+    height: 18px;
+    background: #FFF8F8;
+    border: 1px solid #000000;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.circle-2:last-child {
+    margin-right: 0;
+}
+
+/* Main Content Container */
+.content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 146px; /* Push content down below fixed header */
+    padding: 20px; /* Add some padding around the content */
+    box-sizing: border-box;
+    width: 100%; /* Allow content to take full width */
+}
+
+/* LOGIN */
+
+.login-title {
+    width: auto; /* Adjust based on image width */
+    height: auto; /* Adjust based on image height */
+    margin-top: 160px; /* Add some space from the header */
+    margin-bottom: 20px;
+}
+
+.login-title img {
+    display: block; /* Remove any extra spacing below image */
+    max-width: 523px; /* Limit image width */
+    height: auto;
+}
+
+/* Welcome back! Please login to your account. */
+
+.login-subtitle {
+    font-family: 'poppins', sans-serif; /* Ensure font is available */
+    font-style: normal;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 38px;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 30px;
+}
+
+/* Input Groups */
+.email-input-group, .password-input-group {
+    position: relative;
+    width: 554px;
+    height: 74px;
+    margin-bottom: 20px;
+}
+
+.email-input, .password-input {
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border: 1px solid #C1BBBB;
+    padding: 15px; /* Adjust padding for text within input */
+    font-family: 'Roboto', sans-serif; /* Ensure font is available */
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 21px;
+    color: rgba(0, 0, 0, 0.61);
+}
+
+.email-input::placeholder, .password-input::placeholder {
+    color: rgba(0, 0, 0, 0.61);
+}
+
+/* Remember Me */
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    position: absolute; /* Position relative to the closest positioned ancestor */
+    left: 750px; /* Match Figma position */
+    top: 550px; /* Match Figma position */
+}
+
+.remember-checkbox {
+    box-sizing: border-box;
+    width: 13px;
+    height: 13px;
+    background: #FFFFFF;
+    border: 1px solid #0D0C0C;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.remember-checkbox input[type="checkbox"] {
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Hide the default checkbox */
+    cursor: pointer;
+}
+
+.remember-checkbox::before {
+    content: '';
+    display: block;
+    width: 9px;
+    height: 9px;
+    background-color: transparent;
+    border: 2px solid transparent;
+}
+
+.remember-checkbox input[type="checkbox"]:checked + .remember-checkbox::before {
+    background-color: #0D0C0C; /* Example checked color */
+    border-color: #0D0C0C;
+}
+
+.remember-label {
+    font-family: 'Roboto', sans-serif; /* Ensure font is available */
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+/* Buttons */
+.login-button {
+    position: absolute;
+    width: 129px;
+    height: 54px;
+    left: 750px;
+    top: 601px;
+    background: #060606;
+    box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.25);
+    color: white;
+    font-family: 'Roboto', sans-serif; /* Ensure font is available */
+    font-weight: 500;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+}
+
+.register-group {
+    position: absolute;
+    width: 116px;
+    height: 54px;
+    left: 890px;
+    top: 600px;
+}
+
+.register-button {
+    box-sizing: border-box;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border: 1px solid #3751FE;
+    color: #3751FE;
+    font-family: 'Roboto', sans-serif; /* Ensure font is available */
+    font-weight: 500;
+    font-size: 18px;
+    border-radius: 0;
+    cursor: pointer;
+}

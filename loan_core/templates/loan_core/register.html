@@ -1,0 +1,237 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Register</title>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & base */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #FFF5F0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative shapes */
+    .shape-top-right, .shape-bottom-left, .shape-center {
+      position: absolute;
+      background: #459BFF;
+      opacity: .15;
+      z-index: 0;
+    }
+    .shape-top-right {
+      width: 300px; height: 300px;
+      top: -100px; right: -100px;
+      border-radius: 50% 50% 0 50%;
+      transform: rotate(45deg);
+    }
+    .shape-bottom-left {
+      width: 400px; height: 400px;
+      bottom: -150px; left: -150px;
+      border-radius: 50% 0 50% 50%;
+      transform: rotate(-30deg);
+    }
+    .shape-center {
+      width: 200px; height: 200px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(15deg);
+      border-radius: 20%;
+    }
+
+    /* Centered form box */
+    .form-box {
+      position: relative;
+      z-index: 1;
+      background: white;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    .form-box h1 {
+      font-family: 'Open Sans', sans-serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 3rem;
+      color: #091045;
+      margin-bottom: 1.5rem;
+      text-decoration: underline;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: .5rem;
+      font-weight: 700;
+      color: rgba(0,0,0,0.7);
+    }
+    .form-group input {
+      width: 100%;
+      padding: .75rem;
+      font-size: 1rem;
+      border: 1px solid #C1BBBB;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .error-message {
+      color: #ff3333;
+      margin-bottom: 1rem;
+      font-size: .9rem;
+      text-align: left;
+    }
+
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: .75rem;
+      background: #140CEB;
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transition: transform .2s ease;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+    }
+
+    .login-link {
+      margin-top: 1rem;
+      font-size: .9rem;
+      color: #3751FE;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .login-link:hover {
+      text-decoration: underline;
+    }
+
+    @media(max-width: 480px) {
+      .form-box { padding: 1.5rem; }
+      .form-box h1 { font-size: 2.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Decorative shapes -->
+  <div class="shape-top-right"></div>
+  <div class="shape-bottom-left"></div>
+  <div class="shape-center"></div>
+
+  <!-- Registration form -->
+  <form method="post" action="{% url 'register' %}" class="form-box">
+    {% csrf_token %}
+    <h1>REGISTER</h1>
+
+    {% if form.errors %}
+      <div class="error-message">
+        {% for field in form %}
+          {% for error in field.errors %}
+            • {{ error }}<br>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          • {{ error }}<br>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="form-group">
+      <label for="{{ form.full_name.id_for_label }}">Full Name</label>
+      <input
+        type="text"
+        name="{{ form.full_name.name }}"
+        id="{{ form.full_name.id_for_label }}"
+        placeholder="John Doe"
+        value="{{ form.full_name.value|default:'' }}"
+        required>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.email.id_for_label }}">Email Address</label>
+      <input
+        type="email"
+        name="{{ form.email.name }}"
+        id="{{ form.email.id_for_label }}"
+        placeholder="hello@loanpal.com"
+        value="{{ form.email.value|default:'' }}"
+        required>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.password1.id_for_label }}">Password</label>
+      <input
+        type="password"
+        name="{{ form.password1.name }}"
+        id="{{ form.password1.id_for_label }}"
+        placeholder="Enter password"
+        required>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+      <input
+        type="password"
+        name="{{ form.password2.name }}"
+        id="{{ form.password2.id_for_label }}"
+        placeholder="Confirm password"
+        required>
+    </div>
+
+    <button type="submit" class="btn-submit">SUBMIT</button>
+    <a href="{% url 'login' %}" class="login-link">Already have an account? Log in</a>
+  </form>
+
+  <!-- SweetAlert2 pop‑ups for register outcome -->
+  {% if duplicate %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Swal.fire({
+        title: 'Error',
+        text: 'An account with that email already exists.',
+        icon: 'error',
+        confirmButtonText: 'Login'
+      }).then(() => {
+        window.location.href = "{% url 'login' %}";
+      });
+    });
+  </script>
+  {% endif %}
+
+  {% if registered %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Swal.fire({
+        title: 'Success',
+        text: 'Account created successfully!',
+        icon: 'success',
+        confirmButtonText: 'Login'
+      }).then(() => {
+        window.location.href = "{% url 'login' %}";
+      });
+    });
+  </script>
+  {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,594 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Application </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/loan_application.css' %}">
+  <style>
+  /* VARIABLES */
+      :root {
+        --primary-50: #f0f6ff;
+        --primary-500: #5b87c3;
+        --primary-700: #2b4d87;
+        --primary-900: #1a326d;
+  
+        --neutral-50: #F9FAFB;
+        --neutral-100: #F3F4F6;
+        --neutral-200: #E5E7EB;
+        --neutral-300: #D1D5DB;
+        --neutral-400: #9CA3AF;
+        --neutral-600: #4B5563;
+        --neutral-800: #1F2937;
+  
+        --background: #F5F7FA;
+        --surface: #FFFFFF;
+        --input-border: #D1D5DB;  /* Darker border for inputs */
+        --input-bg: #FFFFFF;      /* White background for inputs */
+  
+        --font-family: 'Inter', sans-serif;
+  
+        /* Added styles for disabled form state */
+        --disabled-bg: #E5E7EB; /* neutral-200 */
+        --disabled-text: #6B7280; /* neutral-500 */
+      }
+  
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+      body {
+        font-family: var(--font-family);
+        background: linear-gradient(135deg, var(--primary-50) 0%, var(--background) 100%);
+        color: var(--neutral-800);
+        min-height: 100vh;
+        padding: 2rem;
+      }
+  
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+  
+      header.header {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: fadeDown 0.6s ease;
+      }
+  
+      header.header h1 {
+        font-size: 2.5rem;
+        color: var(--primary-700);
+        margin-bottom: 0.5rem;
+      }
+  
+      header.header p {
+        color: var(--neutral-600);
+        font-size: 1.1rem;
+      }
+  
+      .loan-form {
+        background: var(--surface);
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        animation: fadeUp 0.8s ease;
+      }
+  
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+      }
+  
+      .section-title {
+        font-size: 1.25rem;
+        color: var(--primary-700);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--primary-50);
+        grid-column: 1/-1;
+      }
+  
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+  
+      label {
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: var(--neutral-800);
+      }
+  
+      input, select, textarea {
+        background: var(--input-bg);
+        border: 2px solid var(--input-border);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: 0.3s;
+        width: 100%;
+        color: var(--neutral-800);
+      }
+  
+      input:focus, select:focus, textarea:focus {
+        background: white;
+        border-color: var(--primary-500);
+        outline: none;
+        box-shadow: 0 0 0 4px var(--primary-50);
+      }
+  
+      /* Style for disabled inputs */
+      .form-grid input[disabled],
+      .form-grid select[disabled],
+      .form-grid textarea[disabled],
+      .form-grid input[type="radio"][disabled] + label,
+      .form-grid input[type="checkbox"][disabled] + label {
+          background: var(--disabled-bg);
+          color: var(--disabled-text);
+          cursor: not-allowed;
+      }
+  
+      .input-with-icon {
+        position: relative;
+      }
+  
+      .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--neutral-400);
+      }
+  
+      .input-with-icon input {
+        padding-left: 2.5rem;
+      }
+  
+      .checkbox-group, .radio-group {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .checkbox-group label,
+      .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0;
+        cursor: pointer;
+      }
+
+      .checkbox-group input[type="checkbox"],
+      .radio-group input[type="radio"] {
+        width: auto;
+        margin-top: 0.1rem;
+      }
+  
+      textarea {
+        resize: vertical;
+      }
+  
+      .submit-btn {
+        background: linear-gradient(to right, var(--primary-700), var(--primary-900));
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        width: 100%;
+        margin-top: 2rem;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+  
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+  
+      /* Style for disabled button */
+      .submit-btn:disabled {
+          background: var(--neutral-400);
+          cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
+      }
+  
+      @keyframes fadeDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+  
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+  
+      @media (max-width: 768px) {
+        .form-grid { grid-template-columns: 1fr; }
+        body { padding: 1rem; }
+      }
+  
+      /* Status message styles */
+      .status-message {
+          background: var(--neutral-100);
+          border-left: 4px solid var(--primary-500);
+          padding: 1.5rem;
+          border-radius: 8px;
+          margin-bottom: 2rem;
+          color: var(--neutral-800);
+          font-size: 1.1rem;
+      }
+  
+      .status-message h2 {
+          color: var(--primary-700);
+          margin-top: 0;
+          margin-bottom: 0.8rem;
+      }
+      .status-message p {
+           margin-bottom: 0;
+      }
+      .status-rejected { border-left-color: #e53e3e; }
+
+      /* Django message styling */
+      .alert {
+          padding: 1rem;
+          margin-bottom: 1rem;
+          border: 1px solid transparent;
+          border-radius: 0.25rem;
+      }
+      .alert-info {
+          color: #0c5460;
+          background-color: #d1ecf1;
+          border-color: #bee5eb;
+      }
+      .alert-success {
+          color: #155724;
+          background-color: #d4edda;
+          border-color: #c3e6cb;
+      }
+      .alert-warning {
+          color: #856404;
+          background-color: #fff3cd;
+          border-color: #ffeeba;
+      }
+      .alert-danger, .alert-error {
+          color: #721c24;
+          background-color: #f8d7da;
+          border-color: #f5c6cb;
+      }
+
+      /* Error message styling */
+      .errors {
+          color: #721c24;
+          font-size: 0.9rem;
+          margin-top: 0.3rem;
+      }
+
+      /* Conditional field visibility */
+      .form-group.hidden {
+          display: none;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Loan Application</h1>
+      <p>Please complete the form below</p>
+    </header>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags != 'info' and message.tags != 'success' or not status_popup %}
+                 <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if application and application.status == 'rejected' %}
+         <div class="status-message status-rejected">
+            <h2>Application Status: Rejected</h2>
+            <p>Your previous loan application submitted on {{ application.created_at|date:"F j, Y" }} was rejected.</p>
+            <p>You are eligible to reapply. Please review your details before submitting a new application.</p>
+        </div>
+    {% endif %}
+
+    {% if not form_disabled %}
+        <form id="loanApplicationForm" class="loan-form" method="POST" action="{% url 'submit_loan_api' %}">
+          {% csrf_token %}
+          <div class="form-grid">
+            <h2 class="section-title">Personal Information</h2>
+
+            <div class="form-group">
+              <label for="id_employment_type">Employment Type</label>
+              {{ form.employment_type }}
+              {% if form.employment_type.errors %}<div class="errors">{{ form.employment_type.errors }}</div>{% endif %}
+            </div>
+
+            <div class="form-group">
+              <label for="id_employer_name">Employer Name</label>
+              {{ form.employer_name }}
+               {% if form.employer_name.errors %}<div class="errors">{{ form.employer_name.errors }}</div>{% endif %}
+            </div>
+
+            <div class="form-group">
+              <label for="id_job_title">Job Title</label>
+              {{ form.job_title }}
+               {% if form.job_title.errors %}<div class="errors">{{ form.job_title.errors }}</div>{% endif %}
+            </div>
+
+            <div class="form-group">
+              <label for="id_monthly_income">Monthly Income</label>
+              <div class="input-with-icon">
+                <span class="input-icon">₦</span>
+                {{ form.monthly_income }}
+                 {% if form.monthly_income.errors %}<div class="errors">{{ form.monthly_income.errors }}</div>{% endif %}
+              </div>
+            </div>
+
+            <h2 class="section-title">Loan Details</h2>
+
+            <div class="form-group">
+              <label for="id_amount">Loan Amount</label>
+              <div class="input-with-icon">
+                <span class="input-icon">₦</span>
+                {{ form.amount }}
+                 {% if form.amount.errors %}<div class="errors">{{ form.amount.errors }}</div>{% endif %}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="id_duration">Loan Duration (months)</label>
+              <select id="id_duration" name="duration" class="form-control">
+                <option value="">Select duration</option>
+                <option value="3">3 months</option>
+                <option value="6">6 months</option>
+                <option value="12">12 months</option>
+                <option value="24">24 months</option>
+                <option value="36">36 months</option>
+                <option value="48">48 months</option>
+                <option value="60">60 months</option>
+              </select>
+              {% if form.duration.errors %}<div class="errors">{{ form.duration.errors }}</div>{% endif %}
+            </div>
+
+            <h2 class="section-title">Credit Assessment</h2>
+
+            <div class="form-group">
+              <label for="id_credit_score">Credit Score (Optional)</label>
+              {{ form.credit_score }}
+              {% if form.credit_score.errors %}<div class="errors">{{ form.credit_score.errors }}</div>{% endif %}
+              <div class="checkbox-group">
+                <label for="id_credit_check">
+                    {{ form.credit_check }} I consent to a credit check
+                </label>
+                {% if form.credit_check.errors %}<div class="errors">{{ form.credit_check.errors }}</div>{% endif %}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="id_total_savings">Total Savings</label>
+              <div class="input-with-icon">
+                <span class="input-icon">₦</span>
+                {{ form.total_savings }}
+                {% if form.total_savings.errors %}<div class="errors">{{ form.total_savings.errors }}</div>{% endif %}
+              </div>
+            </div>
+
+            <div class="form-group" style="grid-column: 1/-1;">
+              <label for="id_assets">Owned Assets</label>
+              {{ form.assets }}
+              {% if form.assets.errors %}<div class="errors">{{ form.assets.errors }}</div>{% endif %}
+            </div>
+
+            <div class="form-group">
+              <label for="id_collateral_type">Collateral Type (if any)</label>
+              <select id="id_collateral_type" name="collateral_type" class="form-control">
+                <option value="">None</option>
+                <option value="real_estate">Real Estate</option>
+                <option value="vehicle">Vehicle</option>
+                <option value="deposit">Fixed Deposit</option>
+                <option value="investment">Investment Securities</option>
+                <option value="other">Other</option>
+              </select>
+              {% if form.collateral_type.errors %}<div class="errors">{{ form.collateral_type.errors }}</div>{% endif %}
+            </div>
+
+            <div class="form-group" id="collateralValueGroup">
+              <label for="id_collateral_value">Estimated Collateral Value</label>
+              <div class="input-with-icon">
+                <span class="input-icon">₦</span>
+                {{ form.collateral_value }}
+                {% if form.collateral_value.errors %}<div class="errors">{{ form.collateral_value.errors }}</div>{% endif %}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Existing Debt?</label>
+              <div class="radio-group">
+                {% for radio in form.existing_debt %}
+                    <label for="{{ radio.id_for_label }}">
+                        {{ radio.tag }} {{ radio.choice_label }}
+                    </label>
+                {% endfor %}
+                {% if form.existing_debt.errors %}<div class="errors">{{ form.existing_debt.errors }}</div>{% endif %}
+              </div>
+            </div>
+
+            <div class="form-group" style="grid-column: 1/-1;">
+              <label for="id_purpose">Purpose of Loan</label>
+              {{ form.purpose }}
+              {% if form.purpose.errors %}<div class="errors">{{ form.purpose.errors }}</div>{% endif %}
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn" {% if form_disabled %}disabled{% endif %}>Submit Application</button>
+        </form>
+    {% else %}
+        <div id="applicationStatusMessage" style="display: none;">
+             {# This div is just a placeholder. The JS will show the SweetAlert #}
+        </div>
+    {% endif %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+  // CSRF helper function to read cookie
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+
+  // Get status data from Django context
+  const applicationStatus = "{{ status_popup|default:'none' }}";
+  const redirectToUrl = "{{ redirect_url|default:'' }}";
+
+  document.addEventListener('DOMContentLoaded', function() {
+      console.log("DOM fully loaded"); // Debug line
+      
+      // Handle collateral value field visibility
+      const collateralTypeSelect = document.getElementById('id_collateral_type');
+      const collateralValueGroup = document.getElementById('collateralValueGroup');
+      const collateralValueInput = document.getElementById('id_collateral_value');
+      
+      // Initial state setup
+      if (collateralTypeSelect && collateralValueGroup) {
+          // Initial setup on page load
+          if (!collateralTypeSelect.value || collateralTypeSelect.value === '') {
+              collateralValueGroup.classList.add('hidden');
+              if (collateralValueInput) {
+                  collateralValueInput.value = '';
+                  collateralValueInput.setAttribute('disabled', 'disabled');
+              }
+          }
+          
+          // Add event listener for changes
+          collateralTypeSelect.addEventListener('change', function() {
+              if (!this.value || this.value === '') {
+                  collateralValueGroup.classList.add('hidden');
+                  if (collateralValueInput) {
+                      collateralValueInput.value = '';
+                      collateralValueInput.setAttribute('disabled', 'disabled');
+                  }
+              } else {
+                  collateralValueGroup.classList.remove('hidden');
+                  if (collateralValueInput) {
+                      collateralValueInput.removeAttribute('disabled');
+                  }
+              }
+          });
+      }
+
+      // Logic to show status popups on page load
+      if (applicationStatus === 'pending') {
+          Swal.fire({
+              icon: 'info',
+              title: 'Application Pending',
+              text: 'Your loan application is currently being reviewed. You cannot apply again until it is processed.',
+              confirmButtonColor: '#2b4d87'
+          });
+      } else if (applicationStatus === 'approved') {
+           Swal.fire({
+              icon: 'success',
+              title: 'Application Approved!',
+              text: 'Your loan application has been approved. Redirecting to recommendations...',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didClose: () => {
+                   if (redirectToUrl) {
+                       window.location.href = redirectToUrl;
+                   }
+              }
+           });
+      }
+
+      // Submit form via AJAX
+      const loanForm = document.getElementById('loanApplicationForm');
+      if (loanForm) {
+          loanForm.addEventListener('submit', async function(e) {
+              e.preventDefault();
+              console.log("Form submitted"); // Debug line
+
+              const form = e.target;
+              const formData = new FormData(form);
+
+              // Show loading spinner
+              Swal.fire({
+                  title: 'Submitting...',
+                  text: 'Please wait while we process your application.',
+                  allowOutsideClick: false,
+                  didOpen: () => {
+                      Swal.showLoading();
+                  }
+              });
+
+              try {
+                  const response = await fetch("{% url 'submit_loan_api' %}", {
+                      method: 'POST',
+                      headers: {
+                          'X-CSRFToken': csrftoken,
+                      },
+                      body: formData
+                  });
+
+                  if (!response.ok) {
+                      const errorData = await response.json();
+                      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                  }
+
+                  const data = await response.json();
+
+                  if (data.status === 'success') {
+                      Swal.fire({
+                          icon: 'success',
+                          title: 'Submitted!',
+                          text: data.message || 'Loan application submitted successfully!',
+                          confirmButtonColor: '#2b4d87'
+                      }).then(() => {
+                          window.location.href = "{% url 'apply_for_loan' %}";
+                      });
+                  } else {
+                      Swal.fire({
+                          icon: 'warning',
+                          title: 'Unexpected Response',
+                          text: data.message || 'Received success status but with issues. Please try again.',
+                          confirmButtonColor: '#2b4d87'
+                      });
+                  }
+              } catch (error) {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Submission Failed',
+                      text: error.message || 'An unexpected error occurred. Please try again.',
+                      confirmButtonColor: '#2b4d87'
+                  });
+              }
+          });
+      }
+  });
+  </script>
+</body>
+</html>

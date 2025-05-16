@@ -1,0 +1,1001 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Personalized Loan Recommendations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-50: #f0f6ff;
+      --primary-100: #e0ebfc;
+      --primary-200: #c0d7f9;
+      --primary-300: #9bbef4;
+      --primary-400: #759fec;
+      --primary-500: #5b87c3;
+      --primary-600: #3e67a5;
+      --primary-700: #2b4d87;
+      --primary-800: #1e3a8a;
+      --primary-900: #1a326d;
+      --neutral-50: #F9FAFB;
+      --neutral-100: #F3F4F6;
+      --neutral-200: #E5E7EB;
+      --neutral-300: #D1D5DB;
+      --neutral-400: #9CA3AF;
+      --neutral-500: #6B7280;
+      --neutral-600: #4B5563;
+      --neutral-700: #374151;
+      --neutral-800: #1F2937;
+      --neutral-900: #111827;
+      --success-50: #ECFDF5;
+      --success-100: #D1FAE5;
+      --success-500: #22c55e;
+      --success-700: #15803d;
+      --warning-50: #FFF7ED;
+      --warning-100: #FFEDD5;
+      --warning-500: #f59e0b;
+      --warning-700: #b45309;
+      --error-50: #FEF2F2;
+      --error-100: #FEE2E2;
+      --error-500: #ef4444;
+      --error-700: #b91c1c;
+      --background: #F5F7FA;
+      --surface: #FFFFFF;
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: linear-gradient(135deg, var(--primary-50) 0%, var(--background) 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      color: var(--neutral-800);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fadeDown 0.6s ease-out;
+    }
+
+    .header h1 {
+      color: var(--primary-800);
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .header p {
+      color: var(--neutral-600);
+      font-size: 1.1rem;
+    }
+
+    .user-profile {
+      background: var(--primary-50);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--primary-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      animation: fadeDown 0.7s ease-out;
+    }
+
+    .profile-info {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .profile-title {
+      font-size: 1.2rem;
+      color: var(--primary-700);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .profile-title svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .profile-stat {
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--neutral-500);
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--neutral-800);
+    }
+
+    .stat-excellent {
+      color: var(--success-700);
+    }
+
+    .stat-good {
+      color: var(--primary-700);
+    }
+
+    .stat-average {
+      color: var(--warning-700);
+    }
+
+    .recommendation-container {
+      background: var(--surface);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      animation: fadeUp 0.8s ease-out;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      color: var(--primary-700);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--primary-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .filter-dropdown {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--neutral-300);
+      background: var(--neutral-50);
+      color: var(--neutral-700);
+      font-family: var(--font-family);
+      font-size: 0.9rem;
+    }
+
+    .recommendation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .recommendation-card {
+      background: var(--neutral-50);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 1px solid var(--neutral-200);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .recommendation-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .recommendation-card.best {
+      border: 2px solid var(--success-500);
+      background: var(--success-50);
+    }
+
+    .recommendation-card.good {
+      border: 2px solid var(--warning-500);
+      background: var(--warning-50);
+    }
+
+    .recommendation-card.basic {
+      border: 2px solid var(--primary-300);
+      background: var(--primary-50);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--neutral-800);
+    }
+
+    .card-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-best {
+      background: var(--success-500);
+      color: white;
+    }
+
+    .badge-good {
+      background: var(--warning-500);
+      color: white;
+    }
+
+    .badge-basic {
+      background: var(--primary-500);
+      color: white;
+    }
+
+    .card-details {
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .detail-label {
+      color: var(--neutral-600);
+      font-size: 0.9rem;
+    }
+
+    .detail-value {
+      font-weight: 500;
+      color: var(--neutral-800);
+    }
+
+    .detail-value.amount {
+      font-size: 1.1rem;
+      color: var(--primary-700);
+    }
+
+    .detail-value.highlight {
+      color: var(--success-700);
+    }
+
+    .card-features {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      border: 1px solid var(--neutral-200);
+    }
+
+    .features-title {
+      font-size: 0.9rem;
+      color: var(--neutral-700);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .feature-list {
+      list-style-type: none;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--neutral-600);
+    }
+
+    .feature-item svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 0.5rem;
+      flex-shrink: 0;
+      color: var(--success-500);
+    }
+
+    .eligibility {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--neutral-300);
+    }
+
+    .eligibility-title {
+      font-size: 0.9rem;
+      color: var(--neutral-700);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .eligibility-list {
+      list-style-type: none;
+    }
+
+    .eligibility-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--neutral-600);
+    }
+
+    .eligibility-item svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 0.5rem;
+      flex-shrink: 0;
+      color: var(--primary-500);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-weight: 500;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background: var(--primary-600);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-700);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-outline {
+      border: 2px solid var(--primary-600);
+      color: var(--primary-600);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-50);
+    }
+
+    .summary-section {
+      margin-top: 3rem;
+      padding: 2rem;
+      border-top: 2px solid var(--primary-100);
+      background: var(--neutral-50);
+      border-radius: 12px;
+    }
+
+    .summary-title {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--neutral-700);
+    }
+
+    .summary-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .summary-text {
+      color: var(--neutral-600);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .why-recommended {
+      background: var(--primary-50);
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: 1px solid var(--primary-200);
+    }
+
+    .why-recommended-title {
+      font-size: 1rem;
+      color: var(--primary-700);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .reason-list {
+      list-style-type: none;
+    }
+
+    .reason-item {
+      display: flex;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: var(--neutral-700);
+    }
+
+    .reason-item svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 0.75rem;
+      margin-top: 0.25rem;
+      flex-shrink: 0;
+      color: var(--primary-600);
+    }
+
+    .next-steps {
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: 1px solid var(--neutral-200);
+      background: white;
+    }
+
+    .steps-title {
+      font-size: 1rem;
+      color: var(--neutral-700);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .steps-list {
+      list-style-type: none;
+      counter-reset: steps-counter;
+    }
+
+    .step-item {
+      display: flex;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: var(--neutral-700);
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .step-item::before {
+      counter-increment: steps-counter;
+      content: counter(steps-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 24px;
+      height: 24px;
+      background: var(--primary-100);
+      color: var(--primary-700);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .required-docs {
+      margin-top: 1.5rem;
+    }
+
+    .docs-title {
+      font-size: 0.95rem;
+      color: var(--neutral-700);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .docs-list {
+      list-style-type: disc;
+      padding-left: 1.5rem;
+      color: var(--neutral-600);
+      font-size: 0.9rem;
+    }
+
+    .docs-list li {
+      margin-bottom: 0.5rem;
+    }
+
+    .actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+    }
+
+    .compare-container {
+      display: flex;
+      align-items: center;
+      color: var(--primary-600);
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .compare-container svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 0.5rem;
+    }
+
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      background: var(--primary-600);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .home-btn svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 0.5rem;
+    }
+
+    .home-btn:hover {
+      background: var(--primary-700);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Credit Score Visualization Styles */
+    .credit-score-section {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: var(--neutral-50);
+      border-radius: 12px;
+      border: 1px solid var(--neutral-200);
+    }
+
+    .credit-score-title {
+      font-size: 1.1rem;
+      color: var(--primary-700);
+      margin-bottom: 1rem;
+    }
+
+    .score-scale {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1.5rem;
+    }
+
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--neutral-600);
+    }
+
+    .scale-bar {
+      height: 20px;
+      background: linear-gradient(to right, 
+        var(--error-500) 0%, 
+        var(--error-500) 20%,    /* 1-20 (E, Poor) */
+        var(--warning-500) 20%, 
+        var(--warning-500) 40%,  /* 21-40 (D, Fair) */
+        var(--warning-100) 40%, 
+        var(--warning-100) 60%,  /* 41-60 (C, Average) */
+        var(--success-100) 60%, 
+        var(--success-100) 80%,  /* 61-80 (B, Good) */
+        var(--success-500) 80%, 
+        var(--success-500) 100%  /* 81-100 (A, Excellent) */
+      );
+      border-radius: 10px;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+
+    .current-score-indicator {
+      position: absolute;
+      top: -15px;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+
+    .indicator-line {
+      width: 2px;
+      height: 15px;
+      background: var(--primary-800);
+      margin: 0 auto;
+    }
+
+    .indicator-value {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary-800);
+      white-space: nowrap;
+    }
+
+    .rating-descriptions {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      text-align: center;
+    }
+
+    .rating {
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .rating-a {
+      background: var(--success-50);
+      color: var(--success-700);
+    }
+
+    .rating-b {
+      background: var(--success-100);
+      color: var(--success-700);
+    }
+
+    .rating-c {
+      background: var(--warning-50);
+      color: var(--warning-700);
+    }
+
+    .rating-d {
+      background: var(--warning-100);
+      color: var(--warning-700);
+    }
+
+    .rating-e {
+      background: var(--error-50);
+      color: var(--error-700);
+    }
+
+    .score-details {
+      margin-top: 1.5rem;
+    }
+
+    .score-detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--neutral-200);
+    }
+
+    .score-detail-label {
+      color: var(--neutral-600);
+      font-size: 0.9rem;
+    }
+
+    .score-detail-value {
+      font-weight: 500;
+    }
+
+    .improvement-tips {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: var(--primary-50);
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-500);
+    }
+
+    .improvement-title {
+      font-size: 0.95rem;
+      color: var(--primary-700);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .improvement-list {
+      list-style-type: none;
+    }
+
+    .improvement-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--neutral-700);
+    }
+
+    .improvement-item svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 0.5rem;
+      margin-top: 0.2rem;
+      flex-shrink: 0;
+      color: var(--primary-600);
+    }
+
+    /* Loading State */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .recommendation-container {
+        padding: 1.5rem;
+      }
+
+      .recommendation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-content {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .rating-descriptions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Personalized Loan Recommendations</h1>
+      <p>Based on your financial profile, we've handpicked these loan options specifically for you</p>
+    </header>
+
+    <div class="user-profile">
+      <div class="profile-info">
+        <h2 class="profile-title">
+          <!-- SVG Icon -->
+          <span>Your Financial Profile</span>
+        </h2>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <span class="stat-label">Monthly Income</span>
+            <span class="stat-value">₦{{ user_data.monthlyIncome|intcomma }}</span>
+          </div>
+          <div class="profile-stat">
+            <span class="stat-label">Credit Score</span>
+            {% if risk_score >= 81 %}
+              <span class="stat-value stat-excellent">{{ risk_score }} (A - Excellent)</span>
+            {% elif risk_score >= 61 %}
+              <span class="stat-value stat-good">{{ risk_score }} (B - Good)</span>
+            {% elif risk_score >= 41 %}
+              <span class="stat-value stat-average">{{ risk_score }} (C - Average)</span>
+            {% elif risk_score >= 21 %}
+              <span class="stat-value stat-average">{{ risk_score }} (D - Fair)</span>
+            {% else %}
+              <span class="stat-value">{{ risk_score }} (E - Poor)</span>
+            {% endif %}
+          </div>
+          <div class="profile-stat">
+            <span class="stat-label">Debt-to-Income Ratio</span>
+            <span class="stat-value stat-good">{{ user_data.debtToIncomeRatio }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="recommendation-container">
+      <div class="section-title">
+        <h2>Recommended Loan Products</h2>
+      </div>
+
+      <div class="credit-score-section">
+        <h3 class="credit-score-title">Your Credit Score Rating</h3>
+
+        <div class="score-scale">
+          <div class="scale-labels">
+            <span>1-20 (E)</span>
+            <span>21-40 (D)</span>
+            <span>41-60 (C)</span>
+            <span>61-80 (B)</span>
+            <span>81-100 (A)</span>
+          </div>
+
+          <div class="scale-bar">
+            <div class="current-score-indicator" style="left: {{ risk_score|floatformat:0 }}%;">
+              <div class="indicator-line"></div>
+              <div class="indicator-value">Your Score: {{ risk_score }}</div>
+            </div>
+          </div>
+
+          <div class="rating-descriptions">
+            <div class="rating rating-e">E (Poor)</div>
+            <div class="rating rating-d">D (Fair)</div>
+            <div class="rating rating-c">C (Average)</div>
+            <div class="rating rating-b">B (Good)</div>
+            <div class="rating rating-a">A (Excellent)</div>
+          </div>
+        </div>
+
+        <div class="score-details">
+          <div class="score-detail-item">
+            <span class="score-detail-label">Payment History</span>
+            <span class="score-detail-value">{{ user_data.creditFactors.paymentHistory }}</span>
+          </div>
+          <div class="score-detail-item">
+            <span class="score-detail-label">Credit Utilization</span>
+            <span class="score-detail-value">{{ user_data.creditFactors.creditUtilization }}</span>
+          </div>
+          <div class="score-detail-item">
+            <span class="score-detail-label">Recent Credit Inquiries</span>
+            <span class="score-detail-value">{{ user_data.creditFactors.recentInquiries }}</span>
+          </div>
+        </div>
+
+        <div class="improvement-tips">
+          <h4 class="improvement-title">Tips to Improve Your Score</h4>
+          <ul class="improvement-list">
+            <li class="improvement-item">Keep credit card balances below 30% of your limit</li>
+            <li class="improvement-item">Pay all bills on time, every time</li>
+            <li class="improvement-item">Avoid applying for multiple new credit lines at once</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="recommendation-grid">
+        {% for rec in recommendations %}
+          <div class="recommendation-card {{ rec.ratingClass }}">
+            <div class="card-header">
+              <h3 class="card-title">{{ rec.productName }}</h3>
+              <span class="card-badge {{ rec.badgeClass }}">{{ rec.recommendationLevel }}</span>
+            </div>
+            <div class="card-details">
+              <div class="detail-item">
+                <span class="detail-label">Loan Amount</span>
+                <span class="detail-value amount">₦{{ rec.loanAmount|intcomma }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Interest Rate</span>
+                <span class="detail-value {% if rec.isBestRate %}highlight{% endif %}">{{ rec.interestRate }}% p.a.</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Repayment Period</span>
+                <span class="detail-value">{{ rec.termMonths }} months</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Monthly Payment</span>
+                <span class="detail-value">₦{{ rec.monthlyPayment|floatformat:2|intcomma }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Processing Fee</span>
+                <span class="detail-value">{{ rec.processingFeePercentage }}%</span>
+              </div>
+            </div>
+            <div class="card-features">
+              <h4 class="features-title">Key Features</h4>
+              <ul class="feature-list">
+                {% for feature in rec.features %}
+                  <li class="feature-item">{{ feature }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="eligibility">
+              <h4 class="eligibility-title">Eligibility Requirements</h4>
+              <ul class="eligibility-list">
+                {% for req in rec.eligibilityRequirements %}
+                  <li class="eligibility-item">{{ req }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="action-buttons">
+              <a href="{% url 'apply_for_loan' %}?productId={{ rec.productId }}" class="action-btn btn-primary">Apply Now</a>
+            </div>
+          </div>
+        {% empty %}
+          <p>No loan recommendations available at this time.</p>
+        {% endfor %}
+      </div>
+
+      <div class="summary-section">
+        <h3 class="summary-title">Your Loan Recommendation Summary</h3>
+        <div class="summary-content">
+          <div class="why-recommended">
+            <h4 class="why-recommended-title">Why These Loans Were Recommended</h4>
+            <ul class="reason-list">
+              <li class="reason-item">Your credit score and financial profile determine your options</li>
+              <li class="reason-item">Your income and repayment capacity are considered</li>
+              <li class="reason-item">Options matched to your financial goals and needs</li>
+            </ul>
+          </div>
+
+          <div class="next-steps">
+            <h4 class="steps-title">Next Steps</h4>
+            <ul class="steps-list">
+              <li class="step-item">Review the loan options and select one that fits your needs</li>
+              <li class="step-item">Gather required documents for your application</li>
+              <li class="step-item">Complete the online application form</li>
+              <li class="step-item">Await approval notification (typically within 2 business days)</li>
+            </ul>
+
+            <div class="required-docs">
+              <h4 class="docs-title">Required Documents:</h4>
+              <ul class="docs-list">
+                <li>Valid government-issued ID</li>
+                <li>Proof of income (3 months bank statements)</li>
+                <li>Proof of address (utility bill)</li>
+                <li>Business registration documents (for business loans)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <a href="{% url 'home' %}" class="home-btn">Return to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+</html>

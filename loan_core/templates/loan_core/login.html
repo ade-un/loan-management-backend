@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Login</title>
+  <style>
+    /* reset & base */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body { font-family: 'Roboto', sans-serif; min-height:100vh; display:flex; }
+
+    /* split the viewport in two */
+    .left-half {
+      flex: 1;
+      background: #459BFF; /* your brand color */
+      clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%); /* optional angled edge */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .left-half .avatar {
+      width: 120px; height: 120px;
+      border-radius:50%;
+      background: url("{% static 'images/avatar.png' %}") center/cover no-repeat;
+    }
+
+    .right-half {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFF5F0;
+      padding: 2rem;
+    }
+
+    .form-box {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .form-box h1 {
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      text-align: center;
+      color: #091045;
+      font-family: 'Open Sans', sans-serif;
+      font-style: italic;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      color: rgba(0,0,0,0.61);
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #C1BBBB;
+      border-radius: 4px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .remember-me input {
+      margin-right: 0.5rem;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+    .btn {
+      flex: 1;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-login {
+      background: #060606;
+      color: white;
+      border: none;
+    }
+    .btn-register {
+      background: white;
+      color: #0C31F1;
+      border: 2px solid #3751FE;
+    }
+
+    .error-message {
+      color: #ff3333;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    @media(max-width: 768px) {
+      body { flex-direction: column; }
+      .left-half { display: none; }
+      .right-half { flex: none; width:100%; padding:1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="left-half">
+    <div class="avatar"></div>
+  </div>
+  <div class="right-half">
+    <form method="post" action="{% url 'login' %}" class="form-box">
+      {% csrf_token %}
+      <h1>LOGIN</h1>
+
+      {% if form.errors %}
+      <div class="error-message">
+        Invalid email or password. Please try again.
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">EMAIL ID</label>
+        <input type="email"
+               id="{{ form.email.id_for_label }}"
+               name="{{ form.email.name }}"
+               placeholder="hello@loanpal.com"
+               required>
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">PASSWORD</label>
+        <input type="password"
+               id="{{ form.password.id_for_label }}"
+               name="{{ form.password.name }}"
+               placeholder="Enter your password"
+               required>
+      </div>
+
+      <div class="remember-me">
+        <input type="checkbox" id="{{ form.remember_me.id_for_label }}" name="{{ form.remember_me.name }}">
+        <label for="{{ form.remember_me.id_for_label }}">Remember Me</label>
+      </div>
+
+      <div class="button-row">
+        <button type="submit" class="btn btn-login">Login</button>
+        <a href="{% url 'register' %}" class="btn btn-register">Register</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
